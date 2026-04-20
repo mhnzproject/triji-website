@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Triji</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #004d40;
+            --accent: #8bc34a;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: var(--bg); color: #333; }
+        
+        .navbar { 
+            background: rgba(255, 255, 255, 0.9); padding: 15px; text-align: center; 
+            border-bottom: 1px solid rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px);
+        }
+        .navbar h1 { margin: 0; font-size: 1.4rem; letter-spacing: 3px; color: var(--primary); font-weight: 800; }
+
+        .hero { 
+            padding: 50px 20px; text-align: center; 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200') center/cover; 
+            color: white;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .hero-logo {
+            max-width: 300px; width: 100%; height: auto; margin-bottom: 10px; 
+            display: block; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.3)); 
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-title { padding: 50px 0 25px; font-weight: 700; font-size: 1.8rem; color: var(--primary); text-align: center; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .menu-card { 
+            background: var(--white); border-radius: 25px; overflow: hidden; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer;
+            display: flex; flex-direction: column; position: relative;
+        }
+        .menu-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+
+        .badge {
+            position: absolute; top: 15px; right: 15px; padding: 6px 14px;
+            border-radius: 50px; font-size: 0.7rem; font-weight: bold; color: white;
+            text-transform: uppercase; z-index: 10;
+        }
+        .best-seller { background: #ff9800; }
+        .must-try { background: #e91e63; }
+
+        .img-container { background: #eee; height: 250px; overflow: hidden; }
+        .menu-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
+        .img-loaded { opacity: 1 !important; }
+
+        .menu-info { padding: 20px; text-align: center; }
+        .price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: block; }
+
+        .btn-detail {
+            background: #f0f0f0; color: #666; font-size: 0.85rem; font-weight: 600;
+            padding: 10px 20px; border-radius: 12px; display: inline-block; transition: 0.3s;
+        }
+        .menu-card:hover .btn-detail { background: var(--accent); color: var(--primary); animation: shake 0.5s ease-in-out infinite; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px) rotate(-1deg); }
+            75% { transform: translateX(2px) rotate(1deg); }
+        }
+
+        .promo-banner {
+            margin: 50px 0 30px; padding: 40px; background: var(--ig-gradient); border-radius: 30px;
+            color: white; text-align: center; box-shadow: 0 10px 25px rgba(220, 39, 67, 0.3);
+        }
+
+        /* --- STYLE UNTUK INSTAGRAM GRID 3x3 --- */
+        .instagram-feed { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* Pastikan selalu 3 kolom */
+            gap: 10px; /* Jarak tipis khas feed IG */
+            margin-bottom: 50px; 
+            max-width: 900px; /* Agar tidak terlalu lebar di desktop */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .ig-item { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; /* MEMBUAT KOTAK SEMPURNA (1:1) */
+            overflow: hidden; 
+            border-radius: 10px; /* Sedikit lengkungan agar modern */
+            background: #ddd; 
+        }
+        
+        .ig-item img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; /* Foto memenuhi kotak tanpa distorsi */
+            transition: transform 0.3s ease; 
+            display: block;
+        }
+        
+        .ig-item:hover img { 
+            transform: scale(1.05); /* Efek zoom tipis saat hover */
+        }
+
+        /* Penyesuaian jarak gap untuk layar HP agar lebih rapat */
+        @media (max-width: 600px) {
+            .instagram-feed { gap: 5px; }
+            .ig-item { border-radius: 5px; }
+        }
+
+        .location-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+            background: white; padding: 30px; border-radius: 30px; border: 2px solid var(--accent);
+        }
+        .loc-group h4 { color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid var(--accent); display: inline-block; }
+        .loc-group ul { list-style: none; padding: 0; font-size: 0.9rem; color: #444; line-height: 1.8; }
+        .loc-group li::before { content: '🚲 '; }
+
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; max-width: 500px; width: 100%; position: relative; text-align: center; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #bbb; }
+        .modal-img { width: 100%; height: 280px; object-fit: cover; border-radius: 20px; margin-bottom: 20px; }
+
+        .btn-social { padding: 12px 25px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: inline-block; margin: 5px; transition: 0.3s; }
+        .btn-wa { background: #25d366; }
+        .btn-wa i, .btn-ig i { margin-right: 8px; font-size: 1.1rem; }
+        .btn-ig { background: var(--ig-gradient); }
+        .btn-social:hover { transform: scale(1.05); }
+
+        footer { text-align: center; padding: 50px; color: #aaa; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <h1>KOPI TRIJI</h1>
+</nav>
+
+<header class="hero">
+    <img src="trijilogo.png" alt="Logo Kopi Triji" class="hero-logo">
+    <p style="font-size: 1.1rem; opacity: 0.9; margin-top: 0;">Beda dua ribu, dapet kopi beneran.</p>
+</header>
+
+<main class="container">
+    <div class="section-title">Signature Menu</div>
+    
+    <div class="menu-grid">
+        <article class="menu-card" onclick="openModal('Aren The OG', 'Espresso bold dengan gula aren murni dan susu creamy.', 'Rp 12.000', 'arenlattetriji.jpg')">
+            <div class="badge best-seller">Best Seller</div>
+            <div class="img-container"><img src="arenlattetriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Aren "The OG"</h4>
+                <span class="price">Rp 12.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+        
+        <article class="menu-card" onclick="openModal('Salted Caramel', 'Gurih sea salt dan manis caramel yang balance.', 'Rp 14.000', 'saltedcarameltriji.jpg')">
+            <div class="badge best-seller">Best Seller</div>
+            <div class="img-container"><img src="saltedcarameltriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Salted Caramel</h4>
+                <span class="price">Rp 14.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+
+        <article class="menu-card" onclick="openModal('Creamy Latte', 'Sangat lembut, cocok untuk yang suka kopi ringan.', 'Rp 12.000', 'creamylattetriji.jpg')">
+            <div class="img-container"><img src="creamylattetriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Creamy Latte</h4>
+                <span class="price">Rp 12.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+        
+        <article class="menu-card" onclick="openModal('Trijicano', 'Americano khas Triji dengan sensasi acidity menyegarkan.', 'Rp 12.000', 'lemonadetriji.jpg')">
+            <div class="badge must-try">Must Try</div>
+            <div class="img-container"><img src="lemonadetriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Trijicano</h4>
+                <span class="price">Rp 12.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+
+        <article class="menu-card" onclick="openModal('Americano', '100% Arabica-Robusta blend tanpa gula.', 'Rp 10.000', 'americanotriji.jpg')">
+            <div class="img-container"><img src="americanotriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Americano</h4>
+                <span class="price">Rp 10.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+        
+        <article class="menu-card" onclick="openModal('Matcha Latte', 'Matcha Jepang premium yang sangat milky dan lembut.', 'Rp 14.000', 'matchatriji.jpg')">
+            <div class="img-container"><img src="matchatriji.jpg" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Matcha Latte</h4>
+                <span class="price">Rp 14.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+
+        <article class="menu-card" onclick="openModal('Triple Chocolate', 'Perpaduan 3 jenis coklat premium yang kaya rasa dan tidak terlalu manis.', 'Rp 14.000', 'chocotriji.png')">
+            <div class="img-container"><img src="chocotriji.png" onload="this.classList.add('img-loaded')"></div>
+            <div class="menu-info">
+                <h4>Triple Chocolate</h4>
+                <span class="price">Rp 14.000</span>
+                <span class="btn-detail">Lihat Detail ⓘ</span>
+            </div>
+        </article>
+    </div>
+
+    <section class="promo-banner">
+        <h2 style="margin: 0 0 10px;">📸 Post & Get Discount!</h2>
+        <p>Potongan <strong>Rp 2.000</strong> per cup! Cukup post ke IG Story & tag <strong>@kopitriji</strong></p>
+    </section>
+
+    <div class="instagram-feed">
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500" alt="IG 1"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500" alt="IG 2"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1525439467158-395597ea3124?w=500" alt="IG 3"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1512568448817-41e0c848d7ce?w=500" alt="IG 4"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1497933321188-ee53853e534c?w=500" alt="IG 5"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=500" alt="IG 6"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?w=500" alt="IG 7"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1515442261605-65987783332f?w=500" alt="IG 8"></div>
+        <div class="ig-item"><img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500" alt="IG 9"></div>
+    </div>
+
+    <div class="section-title">📍 Titik Lokasi Penyebaran Triji Riders</div>
+    <div class="location-grid">
+        <div class="loc-group">
+            <h4>Jakarta Pusat</h4>
+            <ul>
+                <li>City Tower</li>
+                <li>Walikota Jakarta Pusat</li>
+                <li>Sarinah Thamrin</li>
+                <li>SCBD Park</li>
+                <li>Astha</li>
+                <li>Kemndikbud</li>
+                <li>Kebon Sirih</li>
+                <li>City Walk</li>
+                <li>Tanah Abang</li>
+                <li>Sudestada</li>
+                <li>Dana Reksa Tower - Kota Bambu</li>
+           </ul>
+        </div>
+        
+        <div class="loc-group">
+            <h4>Jakarta Barat</h4>
+            <ul>
+                <li>Pelmerah</li>
+                <li>Binus</li>
+                <li>Tanjung Duren</li>
+           </ul>
+            
+        </div>
+        
+        <div class="loc-group">
+            <h4>Jakarta Selatan</h4>
+            <ul>
+                <li>Blok M Plaza</li>
+                <li>Taman Literasi</li>
+                <li>KPK Merah Putih</li>
+                <li>Taman Barito</li>
+                <li>CSW</li>
+                <li>PLN</li>
+                <li>PAM</li>
+                <li>Karsu</li>
+                <li></li>
+           </ul>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 60px 0;">
+        <h3 style="color: var(--primary);">Mager nyari kami?</h3>
+        <p>Tanya posisi rider terdekat dari lokasimu!</p>
+        <a href="https://wa.me/+6285167083357?text=Halo%20Triji!"    class="btn-social btn-wa" target="_blank">
+            <i class="fab fa-whatsapp"></i>Chat Rider Sekarang
+        </a>
+        <a href="https://www.instagram.com/kopitriji/https://www.instagram.com/kopitriji?igsh=cGJ2cmZsa25heTFx" class="btn-social btn-ig" target="_blank">
+            <i class="fab fa-instagram"></i>Temukan kami di Instagram
+        </a>
+    </div>
+
+</main>
+
+<div id="menuModal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img id="modalImg" class="modal-img" src="">
+        <h2 id="modalTitle" style="margin-bottom: 5px;"></h2>
+        <h4 id="modalPrice" style="color:var(--primary); margin:0;"></h4>
+        <p id="modalDesc" style="color:#666; line-height:1.6; margin-top:15px;"></p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Kopi Triji Indonesia. Bedadua ribu, dapet kopi beneran.</p>
+</footer>
+
+<script>
+    function openModal(title, desc, price, img) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('modalPrice').innerText = price;
+        document.getElementById('modalImg').src = img;
+        document.getElementById('menuModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('menuModal')) closeModal();
+    }
+</script>
+
+</body>
+</html>
